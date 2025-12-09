@@ -337,4 +337,7 @@ window.PortfolioJS = {
     showSuccessMessage,
     clearErrors
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ecf3b7b2b76c8280bd3d369e0ba986a798a2383
