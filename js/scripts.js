@@ -140,31 +140,22 @@ function initFormValidation() {
 // Form validation functions
 function validateForm() {
     const form = document.getElementById('contact-form');
-    const name = form.querySelector('#name');
-    const email = form.querySelector('#email');
-    const subject = form.querySelector('#subject');
-    const message = form.querySelector('#message');
-    
+    const fields = form ? form.querySelectorAll('input, textarea') : [];
+
     let isValid = true;
-    
-    // Validate name
-    if (!validateField(name)) isValid = false;
-    
-    // Validate email
-    if (!validateField(email)) isValid = false;
-    
-    // Validate subject
-    if (!validateField(subject)) isValid = false;
-    
-    // Validate message
-    if (!validateField(message)) isValid = false;
-    
+
+    fields.forEach(field => {
+        if (!validateField(field)) {
+            isValid = false;
+        }
+    });
+
     return isValid;
 }
 
 function validateField(field) {
     const value = field.value.trim();
-    const fieldName = field.name;
+    const fieldName = field.name || '';
     let isValid = true;
     let errorMessage = '';
     
@@ -175,13 +166,6 @@ function validateField(field) {
     } else {
         // Specific validations
         switch (fieldName) {
-            case 'name':
-                if (value.length < 2) {
-                    errorMessage = 'Name must be at least 2 characters long';
-                    isValid = false;
-                }
-                break;
-                
             case 'email':
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(value)) {
@@ -189,20 +173,19 @@ function validateField(field) {
                     isValid = false;
                 }
                 break;
-                
-            case 'subject':
-                if (value.length < 5) {
-                    errorMessage = 'Subject must be at least 5 characters long';
-                    isValid = false;
-                }
-                break;
-                
+
             case 'message':
-                if (value.length < 10) {
-                    errorMessage = 'Message must be at least 10 characters long';
+                if (value.length < 5) {
+                    errorMessage = 'Message must be at least 5 characters long';
                     isValid = false;
                 }
                 break;
+
+            default:
+                if (value.length < 2) {
+                    errorMessage = 'Please provide a bit more detail';
+                    isValid = false;
+                }
         }
     }
     
