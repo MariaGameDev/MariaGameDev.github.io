@@ -1,4 +1,4 @@
-// Professional Portfolio Website JavaScript
+//  Portfolio Website JavaScript
 // Smooth scrolling, navigation, form validation, animations, and Formspree integration
 
 document.addEventListener('DOMContentLoaded', function() {
