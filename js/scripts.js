@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFormValidation();
     initScrollAnimations();
     initMobileMenu();
+    initCarousels();
 });
 
 // ----------------------
@@ -31,6 +32,77 @@ function initNavigation() {
                 link.classList.add('active');
             }
         });
+    });
+}
+
+// ----------------------
+// Carousels
+// ----------------------
+function initCarousels() {
+    const carousels = document.querySelectorAll('[data-carousel]');
+
+    carousels.forEach(carousel => {
+        const track = carousel.querySelector('.carousel-track');
+        const slides = Array.from(carousel.querySelectorAll('.carousel-slide'));
+        const prevBtn = carousel.querySelector('.carousel-control.prev');
+        const nextBtn = carousel.querySelector('.carousel-control.next');
+        const dotsContainer = carousel.querySelector('.carousel-dots');
+
+        if (!track || slides.length === 0) return;
+
+        // Build dots
+        slides.forEach((_, idx) => {
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot';
+            dot.setAttribute('aria-label', `Go to slide ${idx + 1}`);
+            dot.addEventListener('click', () => goToSlide(idx));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = Array.from(dotsContainer.querySelectorAll('.carousel-dot'));
+        let currentIndex = 0;
+
+        function updateUI() {
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentIndex));
+        }
+
+        function goToSlide(index) {
+            const total = slides.length;
+            currentIndex = (index + total) % total;
+            updateUI();
+        }
+
+        prevBtn?.addEventListener('click', () => goToSlide(currentIndex - 1));
+        nextBtn?.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+        // Swipe support
+        let startX = 0;
+        let isSwiping = false;
+
+        track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isSwiping = true;
+        });
+
+        track.addEventListener('touchmove', (e) => {
+            if (!isSwiping) return;
+            const diff = e.touches[0].clientX - startX;
+            if (Math.abs(diff) > 50) {
+                isSwiping = false;
+                if (diff > 0) {
+                    goToSlide(currentIndex - 1);
+                } else {
+                    goToSlide(currentIndex + 1);
+                }
+            }
+        });
+
+        track.addEventListener('touchend', () => {
+            isSwiping = false;
+        });
+
+        updateUI();
     });
 }
 
